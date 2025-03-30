@@ -2,9 +2,12 @@
 @using PruebaTecnica.Shared.Entities
 @using PruebaTecnica.Web.Repositories
 @using PruebaTecnica.Web.Shared
+@using Microsoft.AspNetCore.Authorization
 @inject IRepository repository
 @inject NavigationManager navigationManager
 
+
+@attribute [Authorize(Roles = "Admin, User")]
 
 <h3>Productos</h3>
 <div class="mb-3">

@@ -1,6 +1,10 @@
 ﻿﻿@using PruebaTecnica.Shared.Entities
+@using Microsoft.AspNetCore.Authorization
 @inject SweetAlertService swal
 @inject IRepository repository
+
+@attribute [Authorize(Roles = "Admin,User")]
+
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
 

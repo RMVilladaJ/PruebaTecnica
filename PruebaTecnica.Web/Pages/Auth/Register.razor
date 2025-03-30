@@ -1,0 +1,235 @@
+﻿@page "/Register"
+
+@using PruebaTecnica.Shared.DTOs;
+@using PruebaTecnica.Shared.Entities.Enums
+@using PruebaTecnica.Web.Pages.Auth
+@using PruebaTecnica.Web.Services
+@using PruebaTecnica.Web.Shared;
+
+@inject IRepository repository
+
+@inject SweetAlertService sweetAlertService
+
+@inject NavigationManager navigationManager
+
+@inject ILoginService loginService
+
+
+
+<h3>Registrar Nuevo Usuario</h3>
+
+<EditForm Model="userDTO" OnValidSubmit="CreateUserAsync">
+
+    <DataAnnotationsValidator />
+
+
+
+    <div class="card">
+        <div class="card-header">
+            <span>
+                <i class="oi oi-person" /> Registrar Nuevo  Usuario
+                <button class="btn btn-sm btn-primary float-end" type="submit"><i class="bi bi-person-add" /> Registrar</button>
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">
+                        <div class="mb-3">
+                            <label>Documento:</label>
+                            <div>
+                                <InputText width="10" @bind-Value="userDTO.Document" />
+                                <ValidationMessage For="@(() => userDTO.Document)" />
+                            </div>
+                        </div>
+                        <label>Nombres:</label>
+                        <div>
+
+                            <InputText width="10" @bind-Value="userDTO.FullName" />
+
+                            <ValidationMessage For="@(() => userDTO.FullName)" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Apellidos:</label>
+
+                        <div>
+
+                            <InputText width="10" @bind-Value="userDTO.SurName" />
+
+                            <ValidationMessage For="@(() => userDTO.SurName)" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <InputImg Label="Foto" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                    </div>
+
+
+
+                    <div class="mb-3">
+
+                        <label>Teléfono:</label>
+
+                        <div>
+
+                            <InputText width="10" @bind-Value="userDTO.PhoneNumber" />
+
+                            <ValidationMessage For="@(() => userDTO.PhoneNumber)" />
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="mb-3">
+
+                        <label>Email:</label>
+
+                        <div>
+
+                            <InputText width="10" @bind-Value="userDTO.Email" />
+
+                            <ValidationMessage For="@(() => userDTO.Email)" />
+
+                        </div>
+
+                    </div>
+
+
+
+         
+
+
+                    <div class="mb-3">
+                        <label>Rol:</label>
+                        <div>
+                            <InputSelect @bind-Value="userDTO.UserType">
+                                @foreach (var role in Enum.GetValues(typeof(UserType)))
+                                {
+                                    <option value="@role">@role</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => userDTO.UserType)" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="mb-3">
+
+                        <label>Contraseña:</label>
+
+                        <div>
+
+                            <InputText type="password" width="10" @bind-Value="userDTO.Password" />
+
+                            <ValidationMessage For="@(() => userDTO.Password)" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Confirmación de contraseña:</label>
+
+                        <div>
+
+                            <InputText type="password" width="10" @bind-Value="userDTO.PasswordConfirm" />
+
+                            <ValidationMessage For="@(() => userDTO.PasswordConfirm)" />
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+</EditForm>
+
+@code {
+
+    private UserDTO userDTO = new();
+
+    private string imageUrl;
+    private bool loading;
+  
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (!string.IsNullOrEmpty(userDTO.Photo))
+        {
+            imageUrl = userDTO.Photo;
+            userDTO.Photo = null;
+        }
+    }
+
+    private void ImageSelected(string imagenBase64)
+    {
+        userDTO.Photo = imagenBase64;
+        imageUrl = null;
+    }
+
+
+
+
+
+
+    private async Task CreateUserAsync()
+
+    {
+
+        userDTO.UserName = userDTO.Email;
+
+      // userDTO.UserType = UserType.Admin;
+     //  userDTO.UserType = UserType.User;
+
+
+
+        var responseHttp = await repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
+
+        if (responseHttp.Error)
+
+        {
+
+            var message = await responseHttp.GetErrorMessageAsync();
+
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+
+            return;
+
+        }
+
+        loading = false;
+
+        await sweetAlertService.FireAsync("Confirmación", "Su cuenta ha sido creada con éxito. Se te ha enviado un correo electrónico con las instrucciones para activar tu usuario.", SweetAlertIcon.Info);
+
+        navigationManager.NavigateTo("/");
+
+    }
+
+
+
+
+
+} 
