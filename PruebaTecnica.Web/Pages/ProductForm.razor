@@ -1,0 +1,105 @@
+﻿﻿@using PruebaTecnica.Shared.Entities
+@inject SweetAlertService swal
+@inject IRepository repository
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+
+<EditForm EditContext="editContext" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Código:</label>
+        <InputText class="form-control" @bind-Value="Product.Code" />
+        <ValidationMessage For="@(()=>Product.Code)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <InputText class="form-control" @bind-Value="Product.NameProduct" />
+    </div>
+
+    <div class="mb-3">
+        <label>Foto:</label>
+        <InputText class="form-control" @bind-Value="Product.Photo" />
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha Creación:</label>
+        <InputDate class="form-control" @bind-Value="Product.CreateDate" style="max-width:200px" />
+    </div>
+
+    <div class="mb-3">
+        <label>Proveedor:</label>
+        <select class="form-control" @bind="Product.SupplierId">
+            <option value="">Seleccione un proveedor</option>
+            @foreach (var supplier in Suppliers)
+            {
+                <option value="@supplier.Id">@supplier.NameSupplier</option>
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-success" type="button" @onclick="ReturnAction">Regresar</button>
+</EditForm>
+
+@code {
+    private EditContext editContext = null!;
+    private List<Supplier> Suppliers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new(Product);
+        await LoadSuppliers();
+        if (Product.CreateDate == DateTime.MinValue)
+        {
+            Product.CreateDate = DateTime.Now;
+        }
+    }
+
+    [EditorRequired]
+    [Parameter]
+    public Product Product { get; set; } = new();
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; } = false;
+
+    private async Task LoadSuppliers()
+    {
+        var response = await repository.GetAsync<List<Supplier>>("/api/suppliers");
+        if (!response.Error)
+        {
+            Suppliers = response.Response!;
+        }
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasEdited = editContext.IsModified();
+
+        if (!formWasEdited || FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Deseas abandonar la página y perder los cambios?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true
+            });
+
+        if (string.IsNullOrEmpty(result.Value))
+        {
+            context.PreventNavigation();
+        }
+    }
+}

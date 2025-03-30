@@ -1,0 +1,30 @@
+﻿@page "/Productos/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear Producto</h3>
+
+<ProductForm Product="product" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private Product product = new();
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.PostAsync("/api/products", product);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+
+        navigationManager.NavigateTo("/Products");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Products");
+    }
+}
