@@ -20,8 +20,8 @@ namespace PruebaTecnica.API.Data
             base.OnModelCreating(modelBuilder);
             // 🔹 Relación entre Product y Supplier
             modelBuilder.Entity<Product>()
-                .HasOne(p => p.Suppliers)   // Un producto tiene un proveedor
-                .WithMany()                 // Un proveedor puede tener muchos productos
+                .HasOne(p => p.Supplier)   // Un producto tiene un proveedor
+                .WithMany(s => s.Products)      // Un proveedor puede tener muchos productos
                 .HasForeignKey(p => p.SupplierId)
                 .OnDelete(DeleteBehavior.Restrict);  // 
         }

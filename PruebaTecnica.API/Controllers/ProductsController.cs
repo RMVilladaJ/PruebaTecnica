@@ -27,7 +27,7 @@ namespace PruebaTecnica.API.Controllers
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             var products = await _context.Products
-                .Include(p => p.Suppliers) // 🔹 Incluir el proveedor relacionado
+                .Include(p => p.Supplier) // 🔹 Incluir el proveedor relacionado
                 .ToListAsync();
 
             return Ok(products);

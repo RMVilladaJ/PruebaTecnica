@@ -40,9 +40,9 @@ namespace PruebaTecnica.Shared.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime CreateDate { get; set; }
 
-        [JsonIgnore]
-      
-        public Supplier Suppliers { get; set; }
+
+        [ForeignKey("SupplierId")]
+        public Supplier Supplier { get; set; }
         public int SupplierId { get; set; }
 
 

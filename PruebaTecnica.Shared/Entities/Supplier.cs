@@ -40,7 +40,6 @@ namespace PruebaTecnica.Shared.Entities
         public string Email { get; set; }
 
         [JsonIgnore]
-
         public ICollection<Product> Products { get; set; }
 
     }

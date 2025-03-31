@@ -38,9 +38,9 @@ inject IAuthorizationService AuthorizationService
                         <td>@Produt.Code</td>
                         <td>@Produt.NameProduct</td>
                         <td>@Produt.Price</td>
-                        <td>@Produt.Suppliers?.NameSupplier</td>
-                        <td>@Produt.Suppliers?.Email</td>
-                        <td>@Produt.Suppliers?.CellPhone</td>
+                        <td>@Produt.Supplier.NameSupplier</td>
+                        <td>@Produt.Supplier.Email</td>
+                        <td>@Produt.Supplier.CellPhone</td>
 
                         <td>
                             <a href="/Produtos/edit/@Produt.Id" class="btn btn-warning">Editar</a>
