@@ -14,7 +14,7 @@ inject IAuthorizationService AuthorizationService
 
 <h3>Productos</h3>
 <div class="mb-3">
-    <a class="btn btn-create" href="/products/Create">Crear Producto</a>
+    <a class="btn btn-create" href="/Productos/Create">Crear Producto</a>
 </div>
 
 <GenericList MyList="Products">
@@ -43,7 +43,7 @@ inject IAuthorizationService AuthorizationService
                         <td>@Produt.Supplier.CellPhone</td>
 
                         <td>
-                            <a href="/Produtos/edit/@Produt.Id" class="btn btn-warning">Editar</a>
+                            <a href="/Product/edit/@Produt.Id" class="btn btn-warning">Editar</a>
                             <button class="btn btn-danger" @onclick="@(() => DeleteAsync(Produt))">Borrar</button>
                         </td>
                     </tr>

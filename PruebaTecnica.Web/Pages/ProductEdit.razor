@@ -79,42 +79,40 @@ else
 
 
     private async Task Edit()
-
     {
 
         var responseHTTP = await repository.PutAsync("api/products", product);
 
-
-
         if (responseHTTP.Error)
-
         {
-
             var mensajeError = await responseHTTP.GetErrorMessageAsync();
-
             await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
-
         }
+        else{
+            productForm.FormPostedSuccessfully = true;
 
-        else
+            var result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Mensaje",
+                    Text = "Los Cambios se han guardado exitosamente",
+                    Icon = SweetAlertIcon.Success,
+                    ShowCancelButton = false
+                });
 
-        {
 
-            productForm!.FormPostedSuccessfully = true;
-
-            navigationManager.NavigateTo("products");
-
+            navigationManager.NavigateTo("Productos");
         }
 
     }
 
-
-
     private void Return()
-
     {
 
-        navigationManager.NavigateTo("products");
+
+
+        navigationManager.NavigateTo("Productos");
+
+
 
     }
 }

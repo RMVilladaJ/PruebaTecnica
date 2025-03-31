@@ -25,6 +25,22 @@
     <div class="mb-3">
         <label>Foto:</label>
         <InputText class="form-control" @bind-Value="Product.Photo" />
+
+        @if (!string.IsNullOrEmpty(Product.Photo))
+        {
+            <div class="image-container">
+                <img src="@Product.Photo" 
+                height="200"
+                alt="Imagen del producto" 
+                class="product-image" />
+            </div>
+        }
+        
+    </div>
+    <div class="mb-3">
+        <label>Valor:</label>
+        <InputNumber class="form-control" @bind-Value="Product.Price" />
+        <ValidationMessage For="@(()=>Product.Price)" />
     </div>
 
     <div class="mb-3">
@@ -88,22 +104,22 @@
     {
         var formWasEdited = editContext.IsModified();
 
-        if (!formWasEdited || FormPostedSuccessfully)
+        if (formWasEdited && !FormPostedSuccessfully)
         {
-            return;
-        }
+            var result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Confirmación",
+                    Text = "¿Deseas abandonar la página y perder los cambios?",
+                    Icon = SweetAlertIcon.Warning,
+                    ShowCancelButton = true
+                });
 
-        var result = await swal.FireAsync(new SweetAlertOptions
+            if (string.IsNullOrEmpty(result.Value))
             {
-                Title = "Confirmación",
-                Text = "¿Deseas abandonar la página y perder los cambios?",
-                Icon = SweetAlertIcon.Warning,
-                ShowCancelButton = true
-            });
-
-        if (string.IsNullOrEmpty(result.Value))
-        {
-            context.PreventNavigation();
+                context.PreventNavigation();
+            }
         }
+
+        
     }
 }

@@ -5,10 +5,11 @@
 
 <h3>Crear Producto</h3>
 
-<ProductForm Product="product" OnSubmit="Create" ReturnAction="Return" />
+<ProductForm @ref="productForm" Product="product" OnSubmit="Create" ReturnAction="Return" />
 
 @code {
     private Product product = new();
+    private ProductForm productForm;
 
     private async Task Create()
     {
@@ -19,12 +20,24 @@
             await sweetAlertService.FireAsync("Error", message);
             return;
         }
+        else
+        {
+            productForm.FormPostedSuccessfully = true;
 
-        navigationManager.NavigateTo("/Products");
+            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Mensaje",
+                    Text = "Producto creado exitosamente",
+                    Icon = SweetAlertIcon.Success,
+                    ShowCancelButton = false
+                });
+        }
+
+        navigationManager.NavigateTo("/Productos");
     }
 
     private void Return()
     {
-        navigationManager.NavigateTo("/Products");
+        navigationManager.NavigateTo("/Productos");
     }
 }
