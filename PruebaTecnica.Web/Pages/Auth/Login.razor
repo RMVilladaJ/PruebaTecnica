@@ -1,7 +1,7 @@
 ﻿@page "/Login"
 
 @using PruebaTecnica.Shared.DTOs;
-@using PruebaTecnica.Web.Pages.Auth
+@using PruebaTecnica.Web.Pages.Auth;
 @using PruebaTecnica.Web.Services;
 
 @inject IRepository repository
@@ -9,98 +9,60 @@
 @inject NavigationManager navigationManager
 @inject ILoginService loginService
 
-
-<div class="row">
-    <div class="col-md-4  offset-md-4">
-
-
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-md-4">
         <EditForm Model="loginDTO" OnValidSubmit="LoginAsync">
-
             <DataAnnotationsValidator />
 
-            <div class="card bg-light">
-                <div class="card-header justify-content-center">
-                    <span>
-                        <i class="oi oi-account-login" /> Iniciar Sesión
-
-                    </span>
+            <div class="card bg-white shadow-lg rounded-3">
+                <div class="card-header text-center bg-primary text-white fw-bold">
+                    <i class="oi oi-account-login"></i> Iniciar Sesión
                 </div>
-                <div class="card-body">
+
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label class="fw-bold">Email:</label>
+                        <InputText class="form-control" @bind-Value="@loginDTO.Email" placeholder="Ingrese su email" />
+                        <ValidationMessage For="@(() => loginDTO.Email)" />
+                    </div>
 
                     <div class="mb-3">
-
-                        <label>Email:</label>
-
-                        <div>
-
-                            <InputText class="form-control" @bind-Value="@loginDTO.Email" />
-
-                            <ValidationMessage For="@(() => loginDTO.Email)" />
-
-                        </div>
-
+                        <label class="fw-bold">Contraseña:</label>
+                        <InputText class="form-control" type="password" @bind-Value="@loginDTO.Password" placeholder="Ingrese su contraseña" />
+                        <ValidationMessage For="@(() => loginDTO.Password)" />
                     </div>
 
-                    <div class="card-body">
-
-                        <label>Contraseña:</label>
-
-                        <div>
-
-                            <InputText type="password" class="form-control" @bind-Value="@loginDTO.Password" />
-
-                            <ValidationMessage For="@(() => loginDTO.Password)" />
-
-                        </div>
-
-                        <div class="card-footer">
-                            <a class="bbtn btn-link" href="/ResendToken">Reenviar correro de activación de cuenta</a>
-                            <p><a class="bbtn btn-link" href="/RecoverPassword">¿Has olvidado tu contraseña?</a></p>
-                        </div>
-
-
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-lg w-100" type="submit">Iniciar Sesión</button>
                     </div>
-
-                    <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
-
                 </div>
 
+                <div class="card-footer text-center bg-light">
+                    <a class="btn btn-link text-decoration-none" href="/ResendToken">Reenviar correo de activación</a>
+                    <br />
+                    <a class="btn btn-link text-decoration-none" href="/RecoverPassword">¿Has olvidado tu contraseña?</a>
+                </div>
             </div>
 
         </EditForm>
     </div>
 </div>
 
-
-
 @code {
-
     private LoginDTO loginDTO = new();
 
-
-
     private async Task LoginAsync()
-
     {
-
         var responseHttp = await repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", loginDTO);
 
         if (responseHttp.Error)
-
         {
-
             var message = await responseHttp.GetErrorMessageAsync();
-
             await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-
             return;
-
         }
 
         await loginService.LoginAsync(responseHttp.Response!.Token);
-
         navigationManager.NavigateTo("/");
-
     }
-
-} 
+}
