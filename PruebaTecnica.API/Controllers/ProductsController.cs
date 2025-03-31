@@ -24,10 +24,16 @@ namespace PruebaTecnica.API.Controllers
         //Select * From Products
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<List<Product>>> GetProducts([FromQuery] string search)
         {
-            var products = await _context.Products
-                .Include(p => p.Supplier) // 🔹 Incluir el proveedor relacionado
+            IQueryable<Product> productsQuery = _context.Products;
+            if (!string.IsNullOrEmpty(search))
+            {
+                productsQuery = productsQuery.Where(p => p.NameProduct.Contains(search));
+            }
+
+            var products = await productsQuery
+                .Include(p => p.Supplier)
                 .ToListAsync();
 
             return Ok(products);

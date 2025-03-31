@@ -6,26 +6,37 @@
 @inject SweetAlertService swal
 @inject IRepository repository
 @inject NavigationManager navigationManager
-inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 @attribute [Authorize(Roles = "Admin, Seller")]
 
+
 <h3>Ventas</h3>
-<div class="mb-3">
-    <a class="btn btn-create" href="/Sales/Create">Registrar venta</a>
+<div class="d-flex gap-2 mt-2 mb-4">
+    <!-- Agrega margen inferior -->
+    <input type="text" @bind="SearchTerm" placeholder="Buscar..." class="form-control" />
+    <button class="btn btn-primary" @onclick="ApplySearchFilter">Buscar</button>
+</div>
 
     @* control para seleccionar un rango de fecha *@
-    <div class="d-flex gap-2 mt-2">
-        <label for="startDate">Desde:</label>
-        <input type="date" id="startDate" @bind="StartDate" class="form-control" />
-        <label for="endDate">Hasta:</label>
-        <input type="date" id="endDate" @bind="EndDate" class="form-control" />
-        <button class="btn btn-primary" @onclick="ApplyDateFilter">Filtrar</button>
-    </div>
-
+<div class="d-flex gap-2 mt-2">
+    <label for="startDate">Desde:</label>
+    <input type="date" id="startDate" @bind="StartDate" class="form-control" />
+    <label for="endDate">Hasta:</label>
+    <input type="date" id="endDate" @bind="EndDate" class="form-control" />
+    <button class="btn btn-primary" @onclick="ApplyDateFilter">Filtrar</button>
 </div>
+
+<div class="d-flex justify-content-between align-items-center,d-flex gap-2 mt-2 mb-4">
+    <a class="btn btn-primary btn-sm shadow-sm px-2 py-1 mt-2" href="/Sales/Create">
+        Registar venta
+    </a>
+</div>
+
+
+
+
 
 <GenericList MyList="Sales">
     <Body>
@@ -37,7 +48,10 @@ inject IAuthorizationService AuthorizationService
                     <th>Valor del impuesto</th>
                     <th>Fecha venta</th>
                     <th>Precio final</th> 
-                    <th>Acciones</th>
+                    @if (IsAdmin)
+                    {
+                        <th>Acciones</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -51,8 +65,11 @@ inject IAuthorizationService AuthorizationService
                         <td>@Sale.FinalPrice</td>
 
                         <td>
-                            <a href="/Sale/edit/@Sale.Id" class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger" @onclick="@(() => DeleteAsync(Sale))">Borrar</button>
+                            @if (IsAdmin)
+                            {
+                                <a href="/Sale/edit/@Sale.Id" class="btn btn-warning">Editar</a>
+                                <button class="btn btn-danger" @onclick="@(() => DeleteAsync(Sale))">Borrar</button>
+                            }
                         </td>
                     </tr>
                 }
@@ -67,6 +84,7 @@ inject IAuthorizationService AuthorizationService
 
     private DateTime? StartDate { get; set; }
     private DateTime? EndDate { get; set; }
+    private string SearchTerm { get; set; } = "";
 
     private bool IsAdmin { get; set; }
 
@@ -80,16 +98,32 @@ inject IAuthorizationService AuthorizationService
 
     private async Task Load()
     {
-        var queryParams = "";
+        var queryParams = new List<string>();
+
         if (StartDate.HasValue && EndDate.HasValue)
         {
-            queryParams = $"?startDate={StartDate.Value:yyyy-MM-dd}&endDate={EndDate.Value:yyyy-MM-dd}";
+            queryParams.Add($"startDate={StartDate.Value:yyyy-MM-dd}&endDate={EndDate.Value:yyyy-MM-dd}");
         }
-        var responseHttp = await repository.GetAsync<List<Sale>>($"/api/Sales{queryParams}");
+
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            queryParams.Add($"search={SearchTerm}");
+        }
+
+        // Genera la cadena de consulta correctamente
+        var queryString = queryParams.Any() ? $"?{string.Join("&", queryParams)}" : "";
+
+        // Ahora usa queryString en lugar de queryParams
+        var responseHttp = await repository.GetAsync<List<Sale>>($"/api/Sales{queryString}");
         Sales = responseHttp.Response!;
     }
 
     private async Task ApplyDateFilter()
+    {
+        await Load();
+    }
+
+    private async Task ApplySearchFilter()
     {
         await Load();
     }

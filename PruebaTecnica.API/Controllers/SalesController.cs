@@ -24,7 +24,7 @@ namespace PruebaTecnica.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        public async Task<ActionResult> Get([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] string? search)
         {
 
             var userId = User.FindFirst("UserId")?.Value;
@@ -45,6 +45,10 @@ namespace PruebaTecnica.API.Controllers
             if (startDate.HasValue && endDate.HasValue)
             {
                 salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value && s.SaleDate <= endDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(search)) {
+                salesQuery = salesQuery.Where(s => s.Products.NameProduct.Contains(search));
             }
 
             var sales = await salesQuery

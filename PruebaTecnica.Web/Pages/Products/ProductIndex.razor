@@ -6,15 +6,25 @@
 @inject SweetAlertService swal
 @inject IRepository repository
 @inject NavigationManager navigationManager
-inject IAuthorizationService AuthorizationService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 @attribute [Authorize(Roles = "Admin, User")]
 
 <h3>Productos</h3>
-<div class="mb-3">
-    <a class="btn btn-create" href="/Productos/Create">Crear Producto</a>
+
+<div class="d-flex gap-2 mt-2 mb-4">
+    <!-- Agrega margen inferior -->
+    <input type="text" @bind="SearchTerm" placeholder="Buscar..." class="form-control" />
+    <button class="btn btn-primary" @onclick="ApplySearchFilter">Buscar</button>
+</div>
+
+<div class="container mt-2">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <a class="btn btn-primary btn-sm shadow-sm px-2 py-1" href="/Productos/Create">
+            Crear Producto
+        </a>
+    </div>
 </div>
 
 <GenericList MyList="Products">
@@ -24,6 +34,7 @@ inject IAuthorizationService AuthorizationService
                 <tr>
                     <th>Codigo</th>
                     <th>Nombre</th>
+                    <th>Foto</th>
                     <th>Valor</th>
                     <th>Proveedor</th>
                     <th>Email Proveedor</th>
@@ -37,6 +48,11 @@ inject IAuthorizationService AuthorizationService
                     <tr>
                         <td>@Produt.Code</td>
                         <td>@Produt.NameProduct</td>
+                        <td>
+                            <div style="height:150px; width:150px;">
+                                <img style="width:100%; height:100%" src="@Produt.Photo" />
+                            </div>
+                        </td>
                         <td>@Produt.Price</td>
                         <td>@Produt.Supplier.NameSupplier</td>
                         <td>@Produt.Supplier.Email</td>
@@ -58,6 +74,8 @@ inject IAuthorizationService AuthorizationService
     public List<Product> Products { get; set; }
 
     private bool IsAdmin { get; set; }
+    private string SearchTerm { get; set; } = "";
+
 
     protected async override Task OnInitializedAsync()
     {
@@ -69,8 +87,24 @@ inject IAuthorizationService AuthorizationService
 
     private async Task Load()
     {
-        var responseHttp = await repository.GetAsync<List<Product>>("/api/products");
+        var queryParams = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            queryParams.Add($"search={SearchTerm}");
+        }
+
+        // Genera la cadena de consulta correctamente
+        var queryString = queryParams.Any() ? $"?{string.Join("&", queryParams)}" : "";
+
+        // Ahora usa queryString en lugar de queryParams
+        var responseHttp = await repository.GetAsync<List<Product>>($"/api/products{queryString}");
         Products = responseHttp.Response!;
+    }
+
+    private async Task ApplySearchFilter()
+    {
+        await Load();
     }
 
     private async Task DeleteAsync(Product Product)
