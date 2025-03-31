@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -41,16 +42,14 @@ namespace PruebaTecnica.Shared.Entities
         public DateTime SaleDate { get; set; }
 
 
-        [JsonIgnore]
+        [ForeignKey("ProductId")]
         public Product Products { get; set; }
         public int ProductId { get; set; }
 
         [JsonIgnore]
         public User Users { get; set; }
         public string UserId { get; set; }
-
-        [JsonIgnore]
-        public ICollection<Sale> Sales { get; set; }
+        
 
     }
 }

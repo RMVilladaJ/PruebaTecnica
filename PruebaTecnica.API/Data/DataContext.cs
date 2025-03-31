@@ -24,6 +24,12 @@ namespace PruebaTecnica.API.Data
                 .WithMany(s => s.Products)      // Un proveedor puede tener muchos productos
                 .HasForeignKey(p => p.SupplierId)
                 .OnDelete(DeleteBehavior.Restrict);  // 
+
+            modelBuilder.Entity<Sale>()
+                .HasOne(s => s.Products)   // Una venta tiene un producto
+                .WithMany(p => p.Sales)   // Un producto puede estar en muchas ventas
+                .HasForeignKey(s => s.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

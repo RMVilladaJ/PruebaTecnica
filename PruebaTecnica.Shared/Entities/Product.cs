@@ -45,9 +45,8 @@ namespace PruebaTecnica.Shared.Entities
         public Supplier Supplier { get; set; }
         public int SupplierId { get; set; }
 
-
-
-
+        [JsonIgnore]
+        public ICollection<Sale> Sales { get; set; }
 
 
     }

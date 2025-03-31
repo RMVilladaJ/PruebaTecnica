@@ -47,7 +47,9 @@ namespace PruebaTecnica.API.Controllers
                 salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value && s.SaleDate <= endDate.Value);
             }
 
-            var sales = await salesQuery.ToListAsync();
+            var sales = await salesQuery
+                .Include(s => s.Products)
+                .ToListAsync();
             return Ok(sales);
 
 

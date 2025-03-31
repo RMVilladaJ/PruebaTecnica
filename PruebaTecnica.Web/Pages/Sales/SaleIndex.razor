@@ -44,6 +44,8 @@ inject IAuthorizationService AuthorizationService
                 @foreach (var Sale in Sales)
                 {
                     <tr>
+                        <td>@Sale.Products.NameProduct</td>
+                        <td>@Sale.Quantity</td>
                         <td>@Sale.Quantity</td>
                         <td>@Sale.SaleDate</td>
                         <td>@Sale.FinalPrice</td>

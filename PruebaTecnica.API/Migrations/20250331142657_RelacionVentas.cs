@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PruebaTecnica.API.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedDb1 : Migration
+    public partial class RelacionVentas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -219,8 +219,7 @@ namespace PruebaTecnica.API.Migrations
                     FinalPrice = table.Column<double>(type: "float", nullable: false),
                     SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    SaleId = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -235,12 +234,7 @@ namespace PruebaTecnica.API.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Sales_Sales_SaleId",
-                        column: x => x.SaleId,
-                        principalTable: "Sales",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -296,11 +290,6 @@ namespace PruebaTecnica.API.Migrations
                 name: "IX_Sales_ProductId",
                 table: "Sales",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Sales_SaleId",
-                table: "Sales",
-                column: "SaleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sales_UserId",

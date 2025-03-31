@@ -212,9 +212,6 @@ namespace PruebaTecnica.API.Migrations
                     b.Property<DateTime>("SaleDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("SaleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -224,8 +221,6 @@ namespace PruebaTecnica.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SaleId");
 
                     b.HasIndex("UserId");
 
@@ -423,14 +418,10 @@ namespace PruebaTecnica.API.Migrations
             modelBuilder.Entity("PruebaTecnica.Shared.Entities.Sale", b =>
                 {
                     b.HasOne("PruebaTecnica.Shared.Entities.Product", "Products")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PruebaTecnica.Shared.Entities.Sale", null)
                         .WithMany("Sales")
-                        .HasForeignKey("SaleId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("PruebaTecnica.Shared.Entities.User", "Users")
                         .WithMany()
@@ -448,7 +439,7 @@ namespace PruebaTecnica.API.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("PruebaTecnica.Shared.Entities.Sale", b =>
+            modelBuilder.Entity("PruebaTecnica.Shared.Entities.Product", b =>
                 {
                     b.Navigation("Sales");
                 });
