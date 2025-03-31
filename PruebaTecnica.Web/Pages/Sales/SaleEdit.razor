@@ -1,0 +1,102 @@
+﻿@page "/Sale/edit/{Id:int}"
+@using Microsoft.AspNetCore.Authorization
+
+@inject NavigationManager navigationManager
+@inject IRepository repository
+@inject SweetAlertService swal
+
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Editar Producto</h3>
+
+@if (sale is null)
+
+{
+    <p>Cargando...</p>
+}
+
+else
+
+{
+    <SaleForm @ref="saleForm" Sale="sale" OnSubmit="Edit" ReturnAction="Return" />
+}
+
+@code {
+    private Sale sale;
+
+    private SaleForm saleForm;
+
+
+
+    [Parameter]
+
+    public int Id { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+
+    {
+        var responseHTTP = await repository.GetAsync<Sale>($"api/Sales/{Id}");
+
+        if (responseHTTP.Error)
+
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+
+            {
+                navigationManager.NavigateTo("Sales");
+            }
+
+            else
+
+            {
+                var messageError = await responseHTTP.GetErrorMessageAsync();
+
+                await swal.FireAsync("Error", messageError, SweetAlertIcon.Error);
+
+            }
+
+        }
+
+        else
+
+        {
+            sale = responseHTTP.Response;
+        }
+
+    }
+
+
+    private async Task Edit()
+    {
+        var responseHTTP = await repository.PutAsync("api/products", sale);
+
+        if (responseHTTP.Error)
+        {
+            var mensajeError = await responseHTTP.GetErrorMessageAsync();
+            await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else{
+           saleForm.FormPostedSuccessfully = true;
+
+            var result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Mensaje",
+                    Text = "Los Cambios se han guardado exitosamente",
+                    Icon = SweetAlertIcon.Success,
+                    ShowCancelButton = false
+                });
+
+            navigationManager.NavigateTo("Sales");
+        }
+
+    }
+
+    private void Return()
+    {
+
+        navigationManager.NavigateTo("Sales");
+
+    }
+}

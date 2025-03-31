@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PruebaTecnica.API.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedDb : Migration
+    public partial class SeedDb1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -219,16 +219,15 @@ namespace PruebaTecnica.API.Migrations
                     FinalPrice = table.Column<double>(type: "float", nullable: false),
                     SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     SaleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sales", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sales_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Sales_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -304,9 +303,9 @@ namespace PruebaTecnica.API.Migrations
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sales_UsersId",
+                name: "IX_Sales_UserId",
                 table: "Sales",
-                column: "UsersId");
+                column: "UserId");
         }
 
         /// <inheritdoc />

@@ -9,6 +9,6 @@ namespace PruebaTecnica.Shared.Entities.Enums
     public enum UserType
     {
         Admin,
-        User
+        Seller
     }
 }

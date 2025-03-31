@@ -1,0 +1,179 @@
+﻿@using PruebaTecnica.Shared.Entities
+@using Microsoft.AspNetCore.Authorization
+@inject SweetAlertService swal
+@inject IRepository repository
+
+@attribute [Authorize(Roles = "Admin,User")]
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+
+<EditForm EditContext="editContext" OnSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Producto:</label>
+        <select class="form-control" @bind="SelectedProductId">
+            <option value="">Seleccione un producto</option>
+            @foreach (var product in Products)
+            {
+                <option value="@product.Id">@product.NameProduct</option>
+            }
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label>Cantidad:</label>
+        <InputNumber class="form-control" @bind-Value="Sale.Quantity" @oninput="CalculateFinalPrice" />
+        <ValidationMessage For="@(() => Sale.Quantity)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Impuesto(%): { @Sale.tax }</label>
+        <InputNumber class="form-control" @bind-Value="LocalTax" />
+        <ValidationMessage For="@(() => Sale.tax)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Valor:</label>
+        <InputNumber class="form-control" @bind-Value="SelectedProductPrice" disabled />
+    </div>
+    <div class="mb-3">
+        <label>Valor Final:</label>
+        <InputNumber class="form-control" @bind-Value="Sale.FinalPrice" disabled />
+    </div>
+   
+    <div class="mb-3">
+        <label>Fecha Creación:</label>
+        <InputDate class="form-control" @bind-Value="Sale.SaleDate" style="max-width:200px" />
+    </div>
+
+    <button class="btn btn-primary" type="button" @onclick="OnSubmit">
+        Guardar
+    </button>
+    <button class="btn btn-success" type="button" @onclick="ReturnAction">Regresar</button>
+</EditForm>
+
+@code {
+    private EditContext editContext = null!;
+    private List<Product> Products = new();
+    private decimal SelectedProductPrice = 0;
+
+    private int selectedProductId;
+    private int SelectedProductId
+    {
+        get => selectedProductId;
+        set
+        {
+            selectedProductId = value;
+            Sale.ProductId = value;
+            OnProductSelected();
+        }
+    }
+
+    public double LocalTax
+    {
+        get => Sale.tax;
+        set
+        {
+            Sale.tax = value;
+            CalculateFinalPrice();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new(Sale);
+        await LoadProducts();
+        if (Sale.SaleDate == DateTime.MinValue)
+        {
+            Sale.SaleDate = DateTime.Now;
+        }
+    }
+
+    [EditorRequired]
+    [Parameter]
+    public Sale Sale { get; set; } = new();
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; } = false;
+
+    private void OnProductSelected(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int productId))
+        {
+            var selectedProduct = Products.FirstOrDefault(p => p.Id == productId);
+            if (selectedProduct != null)
+            {
+                SelectedProductPrice = (decimal)selectedProduct.Price;
+                CalculateFinalPrice();
+            }
+        }
+    }
+
+    private void OnProductSelected()
+    {
+        var selectedProduct = Products.FirstOrDefault(p => p.Id == SelectedProductId);
+        if (selectedProduct != null)
+        {
+            SelectedProductPrice = (decimal)selectedProduct.Price;
+        }
+    }
+
+    private void CalculateFinalPrice()
+    {
+        if (Sale.Quantity == 0)
+        {
+            Sale.FinalPrice = 0;
+            return;
+        }
+
+        if (Sale.tax == 0)
+        {
+            Sale.FinalPrice = (double) Sale.Quantity * (double) SelectedProductPrice;
+            return;
+        }
+
+        double basePrice = (double)Sale.Quantity * (double)SelectedProductPrice;
+
+        Sale.FinalPrice = basePrice + (basePrice * (Sale.tax / 100));
+
+    }
+
+    private async Task LoadProducts()
+    {
+        var response = await repository.GetAsync<List<Product>>("/api/products");
+        if (!response.Error)
+        {
+            Products = response.Response!;
+        }
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasEdited = editContext.IsModified();
+
+        if (formWasEdited && !FormPostedSuccessfully)
+        {
+            var result = await swal.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Confirmación",
+                    Text = "¿Deseas abandonar la página y perder los cambios?",
+                    Icon = SweetAlertIcon.Warning,
+                    ShowCancelButton = true
+                });
+
+            if (string.IsNullOrEmpty(result.Value))
+            {
+                context.PreventNavigation();
+            }
+        }
+    }
+}

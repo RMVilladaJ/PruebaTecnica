@@ -47,7 +47,7 @@ namespace PruebaTecnica.Shared.Entities
 
         [JsonIgnore]
         public User Users { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [JsonIgnore]
         public ICollection<Sale> Sales { get; set; }

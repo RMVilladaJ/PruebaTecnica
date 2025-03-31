@@ -211,7 +211,8 @@ namespace PruebaTecnica.API.Controllers
                 new Claim("Document", user.Document),
                 new Claim("FullName", user.FullName),
                 new Claim("SurName", user.SurName),
-                new Claim("Photo", user.Photo ?? string.Empty)
+                new Claim("Photo", user.Photo ?? string.Empty),
+                new Claim("UserId", user.Id)
 
             };
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PruebaTecnica.API.Data;
 using PruebaTecnica.Shared.Entities;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -23,10 +24,32 @@ namespace PruebaTecnica.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
 
-            return Ok(await _context.Sales.ToListAsync());
+            var userId = User.FindFirst("UserId")?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (userId == null || userRole == null)
+            {
+                return Unauthorized("No se pudo determinar la identidad del usuario.");
+            }
+
+            IQueryable<Sale> salesQuery = _context.Sales;
+
+            if (userRole != "Admin") // Si no es Admin, filtrar por UserId
+            {
+                salesQuery = salesQuery.Where(s => s.UserId == userId);
+            }
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                salesQuery = salesQuery.Where(s => s.SaleDate >= startDate.Value && s.SaleDate <= endDate.Value);
+            }
+
+            var sales = await salesQuery.ToListAsync();
+            return Ok(sales);
+
 
 
         }
@@ -36,6 +59,8 @@ namespace PruebaTecnica.API.Controllers
         public async Task<ActionResult> Get(int id)
         {
             var owner = await _context.Sales.FirstOrDefaultAsync(x => x.Id == id);
+
+
 
             if (owner == null)
             {
@@ -49,9 +74,28 @@ namespace PruebaTecnica.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Sale sale)
         {
-            _context.Add(sale);
-            await _context.SaveChangesAsync();
-            return Ok(sale);
+
+            // Obtener el ID del usuario autenticado desde los claims
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized("No se pudo obtener el ID del usuario.");
+            }
+
+            sale.UserId = (userIdClaim.Value).ToString();
+
+            try
+            {
+                _context.Add(sale);
+                await _context.SaveChangesAsync();
+                return Ok(sale);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+
         }
 
         [HttpPut]

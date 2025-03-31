@@ -215,10 +215,7 @@ namespace PruebaTecnica.API.Migrations
                     b.Property<int?>("SaleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("tax")
@@ -230,7 +227,7 @@ namespace PruebaTecnica.API.Migrations
 
                     b.HasIndex("SaleId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Sales");
                 });
@@ -437,7 +434,7 @@ namespace PruebaTecnica.API.Migrations
 
                     b.HasOne("PruebaTecnica.Shared.Entities.User", "Users")
                         .WithMany()
-                        .HasForeignKey("UsersId");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Products");
 

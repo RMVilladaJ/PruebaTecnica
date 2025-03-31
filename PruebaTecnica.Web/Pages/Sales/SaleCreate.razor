@@ -1,0 +1,43 @@
+﻿@page "/Sales/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Registar Venta</h3>
+
+<SaleForm @ref="saleForm" Sale="sale" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private Sale sale = new();
+    private SaleForm saleForm;
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.PostAsync("/api/Sales", sale);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+        else
+        {
+            saleForm.FormPostedSuccessfully = true;
+
+            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+                {
+                    Title = "Mensaje",
+                    Text = "Producto creado exitosamente",
+                    Icon = SweetAlertIcon.Success,
+                    ShowCancelButton = false
+                });
+        }
+
+        navigationManager.NavigateTo("/Sales");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Sales");
+    }
+}

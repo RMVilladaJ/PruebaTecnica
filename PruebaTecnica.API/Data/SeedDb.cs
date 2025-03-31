@@ -13,6 +13,9 @@ namespace PruebaTecnica.API.Data
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+
+        List<User> userList = new List<User>();
+
         public SeedDb(DataContext context, IUserHelper userHelper)
         {
             _context = context;
@@ -25,7 +28,15 @@ namespace PruebaTecnica.API.Data
             await _context.Database.EnsureDeletedAsync(); // 💥 Elimina la base de datos antes de crearla (para evitar errores)
             await _context.Database.EnsureCreatedAsync();
             await CheckRolesAsync(); //Validar roles de usuario
-            await CheckUserAsync("123456", "Rosa", "Villada", "Villada@gmail.com", "3017993879", UserType.Admin);
+
+            User defaultAdminUser1 =  await CheckUserAsync("123456", "Rosa", "Villada", "admin@gmail.com", "3017993879", UserType.Admin);
+            User defaultSellerUser1 =  await CheckUserAsync("123456", "Rosa 1", "Villada Seller", "seller01@gmail.com", "30179938791", UserType.Seller);
+            User sellerUser2 = await CheckUserAsync("123456", "Rosa 2", "Villada Seller", "seller02@gmail.com", "30179938792", UserType.Seller);
+
+            userList.Add(defaultSellerUser1);
+            userList.Add(defaultAdminUser1);
+            userList.Add(sellerUser2);
+
             var suppliers = await CheckSuppliersAsync(); // Insertar y obtener proveedores
             var products = await CheckProductsAsync(suppliers); // Insertar y obtener productos
             await CheckSalesAsync(products); // Insertar ventas
@@ -33,7 +44,7 @@ namespace PruebaTecnica.API.Data
         private async Task CheckRolesAsync()
         {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
-            await _userHelper.CheckRoleAsync(UserType.User.ToString());
+            await _userHelper.CheckRoleAsync(UserType.Seller.ToString());
         }
 
         private async Task<User> CheckUserAsync(string document, string FullName, string SurName, string email, string phone, UserType userType)
@@ -50,7 +61,7 @@ namespace PruebaTecnica.API.Data
                     SurName = SurName,
                     Email = email,
                     UserName = email,
-
+                    EmailConfirmed = true,                    
                     PhoneNumber = phone,
                     UserType = userType,
                 };
@@ -114,7 +125,7 @@ namespace PruebaTecnica.API.Data
                     {
                         Code = $"P{supplier.Id}01",
                         NameProduct = $"Producto de {supplier.NameSupplier}",
-                        Photo = "https://www.google.com/imgres?q=mp4&imgurl=https%3A%2F%2Fwww.energysistem.com%2Fcdnassets%2Fproducts%2F45659%2Ffront_2000.webp%3F3%2F8%2Fa%2F5%2F38a5ad720858645ee79eaa433f0d9e3786605373_02_handy_mp4_player_45659.jpg&imgrefurl=https%3A%2F%2Fwww.energysistem.com%2Fhandy-reproductor-de-mp4-con-bluetooth-y-radio-fm-45659-mx&docid=4223oPfp6qBIhM&tbnid=kLXDFqcgQ7y2PM&vet=12ahUKEwj1idX7zbCMAxUMpLAFHYLwKfsQM3oECEYQAA..i&w=2000&h=2000&hcb=2&ved=2ahUKEwj1idX7zbCMAxUMpLAFHYLwKfsQM3oECEYQAA",
+                        Photo = "https://hebmx.vtexassets.com/arquivos/ids/676552-1600-1600?v=638497922040100000&width=1600&height=1600&aspect=true",
                         Price = 15000 + (supplier.Id * 5000), // Precio variable
                         CreateDate = DateTime.UtcNow,
                         SupplierId = supplier.Id
@@ -151,8 +162,20 @@ namespace PruebaTecnica.API.Data
                         FinalPrice = product.Price * 1.19 * quantity, // Precio con impuesto y cantidad
                         SaleDate = DateTime.UtcNow,
                         ProductId = product.Id,
-                        UserId = 1
+                        UserId = userList[0].Id
                     });
+
+                    sales.Add(new Sale
+                    {
+                        Quantity = quantity,
+                        tax = 0.19,
+                        FinalPrice = product.Price * 1.19 * quantity, // Precio con impuesto y cantidad
+                        SaleDate = DateTime.UtcNow,
+                        ProductId = product.Id,
+                        UserId = userList[2].Id
+                    });
+
+
                 }
 
                 _context.Sales.AddRange(sales);
