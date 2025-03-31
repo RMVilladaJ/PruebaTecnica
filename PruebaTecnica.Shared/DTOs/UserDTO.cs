@@ -1,4 +1,4 @@
-﻿using PruebaTecnica.Shared.Entidades;
+﻿using PruebaTecnica.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

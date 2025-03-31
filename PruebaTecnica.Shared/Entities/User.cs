@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PruebaTecnica.Shared.Entities;
 using PruebaTecnica.Shared.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 
-namespace PruebaTecnica.Shared.Entidades
+namespace PruebaTecnica.Shared.Entities
 {
     public class User : IdentityUser
     {

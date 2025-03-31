@@ -3,8 +3,11 @@
 @using PruebaTecnica.Web.Repositories
 @using PruebaTecnica.Web.Shared
 @using Microsoft.AspNetCore.Authorization
+@inject SweetAlertService swal
 @inject IRepository repository
 @inject NavigationManager navigationManager
+inject IAuthorizationService AuthorizationService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 
 @attribute [Authorize(Roles = "Admin, User")]
@@ -21,10 +24,11 @@
                 <tr>
                     <th>Codigo</th>
                     <th>Nombre</th>
-                    <th>Foto</th>
                     <th>Valor</th>
-                    <th>Fecha Creación</th>
-
+                    <th>Proveedor</th>
+                    <th>Email Proveedor</th>
+                    <th>Celular Proveedor</th>    
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,15 +37,14 @@
                     <tr>
                         <td>@Produt.Code</td>
                         <td>@Produt.NameProduct</td>
+                        <td>@Produt.Price</td>
+                        <td>@Produt.Suppliers?.NameSupplier</td>
+                        <td>@Produt.Suppliers?.Email</td>
+                        <td>@Produt.Suppliers?.CellPhone</td>
+
                         <td>
-                            <div style="height:150px; width:150px;">
-                                <img style="width:100%; height:100%" src="@Produt.Photo" />
-                            </div>
-                        </td>
-                        <td>@Produt.CreateDate</td>
-                        <td>
-                             <a class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger">Borrar</button>
+                            <a href="/Produtos/edit/@Produt.Id" class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger" @onclick="@(() => DeleteAsync(Produt))">Borrar</button>
                         </td>
                     </tr>
                 }
@@ -54,23 +57,56 @@
 
     public List<Product> Products { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private bool IsAdmin { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsAdmin = user.IsInRole("Admin");
+        await Load();
+    }
+
+    private async Task Load()
     {
         var responseHttp = await repository.GetAsync<List<Product>>("/api/products");
+        Products = responseHttp.Response!;
+    }
 
-        // Depuración en la consola
-        Console.WriteLine($"¿Hubo error?: {responseHttp.Error}");
-        Console.WriteLine($"Cantidad de productos recibidos: {responseHttp.Response?.Count ?? 0}");
+    private async Task DeleteAsync(Product Product)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
 
-        if (!responseHttp.Error && responseHttp.Response != null)
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
         {
-            Products = responseHttp.Response;
+            return;
+        }
+
+        var responseHTTP = await repository.DeleteAsync<Product>($"api/products/{Product.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
         }
         else
         {
-            Products = new List<Product>(); // Lista vacía si hay error
+            await Load();
         }
-
-        Console.WriteLine($"Cantidad de productos en Products: {Products.Count}");
     }
 }

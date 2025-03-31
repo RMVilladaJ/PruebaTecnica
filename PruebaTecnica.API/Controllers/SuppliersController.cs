@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PruebaTecnica.API.Data;
 using PruebaTecnica.Shared.Entities;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace PruebaTecnica.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //protegidos
     [ApiController]
     [Route("/api/suppliers")]
 

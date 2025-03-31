@@ -17,7 +17,6 @@ namespace PruebaTecnica.Shared.DTOs
         public string Email { get; set; } = null!;
 
 
-
         [Display(Name = "Contraseña")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MinLength(6, ErrorMessage = "El campo {0} debe tener al menos {1} carácteres.")]

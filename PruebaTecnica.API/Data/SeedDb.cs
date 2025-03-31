@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PruebaTecnica.API.Helpers;
-using PruebaTecnica.Shared.Entidades;
 using PruebaTecnica.Shared.Entities;
 using PruebaTecnica.Shared.Entities.Enums;
 using System;

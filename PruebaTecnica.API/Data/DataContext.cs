@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PruebaTecnica.Shared.Entidades;
 using PruebaTecnica.Shared.Entities;
 
 namespace PruebaTecnica.API.Data
@@ -19,6 +18,12 @@ namespace PruebaTecnica.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            // 🔹 Relación entre Product y Supplier
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Suppliers)   // Un producto tiene un proveedor
+                .WithMany()                 // Un proveedor puede tener muchos productos
+                .HasForeignKey(p => p.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);  // 
         }
     }
 }

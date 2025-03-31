@@ -158,7 +158,7 @@ namespace PruebaTecnica.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PruebaTecnica.Shared.Entidades.User", b =>
+            modelBuilder.Entity("PruebaTecnica.Shared.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -375,7 +375,7 @@ namespace PruebaTecnica.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", null)
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -384,7 +384,7 @@ namespace PruebaTecnica.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", null)
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -399,7 +399,7 @@ namespace PruebaTecnica.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", null)
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -408,16 +408,16 @@ namespace PruebaTecnica.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", null)
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PruebaTecnica.Shared.Entidades.User", b =>
+            modelBuilder.Entity("PruebaTecnica.Shared.Entities.User", b =>
                 {
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", null)
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", null)
                         .WithMany("Users")
                         .HasForeignKey("UserId");
                 });
@@ -445,7 +445,7 @@ namespace PruebaTecnica.API.Migrations
                         .WithMany("Sales")
                         .HasForeignKey("SaleId");
 
-                    b.HasOne("PruebaTecnica.Shared.Entidades.User", "Users")
+                    b.HasOne("PruebaTecnica.Shared.Entities.User", "Users")
                         .WithMany()
                         .HasForeignKey("UsersId");
 
@@ -454,7 +454,7 @@ namespace PruebaTecnica.API.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("PruebaTecnica.Shared.Entidades.User", b =>
+            modelBuilder.Entity("PruebaTecnica.Shared.Entities.User", b =>
                 {
                     b.Navigation("Users");
                 });

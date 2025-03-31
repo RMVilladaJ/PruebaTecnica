@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PruebaTecnica.API.Data;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace PruebaTecnica.API.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] //protegidos
     [ApiController]
     [Route("/api/products")]
     public class ProductsController: ControllerBase
@@ -22,12 +24,13 @@ namespace PruebaTecnica.API.Controllers
         //Select * From Products
 
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult<List<Product>>> GetProducts()
         {
+            var products = await _context.Products
+                .Include(p => p.Suppliers) // 🔹 Incluir el proveedor relacionado
+                .ToListAsync();
 
-            return Ok(await _context.Products.ToListAsync());
-
-
+            return Ok(products);
         }
 
         // Get por parámetro
