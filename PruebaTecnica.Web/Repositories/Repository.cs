@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
+using System.Net.Http.Json;
 
 namespace PruebaTecnica.Web.Repositories
 {
@@ -105,6 +106,30 @@ namespace PruebaTecnica.Web.Repositories
             }
             return new HttpResponseWrapper<TResponse>(default, !responseHttp.IsSuccessStatusCode, responseHttp);
         }
+
+
+        public async Task<HttpResponseWrapper<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent formData)
+        {
+            try
+            {
+                var responseHttp = await _httpClient.PostAsync(url, formData);
+
+                if (responseHttp.IsSuccessStatusCode)
+                {
+                    var response = await UnserializeAnswer<TResponse>(responseHttp, _jsonDefaultOptions);
+                    return new HttpResponseWrapper<TResponse>(response, false, responseHttp);
+                }
+
+                return new HttpResponseWrapper<TResponse>(default, true, responseHttp);
+            }
+            catch (Exception ex)
+            {
+                
+                return null;
+            }
+        }
+
+
 
 
     }

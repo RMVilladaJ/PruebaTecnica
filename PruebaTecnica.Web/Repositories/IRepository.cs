@@ -15,6 +15,8 @@
 
         Task<HttpResponseWrapper<TResponse>> Put<T, TResponse>(string url, T model);
 
+        Task<HttpResponseWrapper<TResponse>> PostMultipartAsync<TResponse>(string url, MultipartFormDataContent formData);
+
     }
 }
 

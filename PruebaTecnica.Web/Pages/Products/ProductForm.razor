@@ -24,19 +24,19 @@
 
     <div class="mb-3">
         <label>Foto:</label>
-        <InputText class="form-control" @bind-Value="Product.Photo" />
+        <InputFile OnChange="HandleFileSelected" class="form-control" />
 
         @if (!string.IsNullOrEmpty(Product.Photo))
         {
             <div class="image-container">
-                <img src="@Product.Photo" 
-                height="200"
-                alt="Imagen del producto" 
-                class="product-image" />
+                <img src="@Product.Photo"
+                     height="200"
+                     alt="Imagen del producto"
+                     class="product-image" />
             </div>
         }
-        
     </div>
+
     <div class="mb-3">
         <label>Valor:</label>
         <InputNumber class="form-control" @bind-Value="Product.Price" />
@@ -59,7 +59,7 @@
         </select>
     </div>
 
-    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-primary" type="button" @onclick="PerformSubmit" >Guardar</button>
     <button class="btn btn-success" type="button" @onclick="ReturnAction">Regresar</button>
 </EditForm>
 
@@ -89,7 +89,12 @@
     [Parameter]
     public EventCallback ReturnAction { get; set; }
 
+    [EditorRequired]
+    [Parameter]
+    public EventCallback<IBrowserFile> OnFileSelected { get; set; }
+
     public bool FormPostedSuccessfully { get; set; } = false;
+    private IBrowserFile selectedFile;
 
     private async Task LoadSuppliers()
     {
@@ -118,8 +123,25 @@
             {
                 context.PreventNavigation();
             }
+        }        
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        OnFileSelected.InvokeAsync(selectedFile);
+    }
+
+    private async Task PerformSubmit()
+    {
+        if (selectedFile != null)
+        {
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(selectedFile.Name);            
         }
 
-        
+        await OnSubmit.InvokeAsync();
     }
+
+
+
 }

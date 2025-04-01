@@ -1,19 +1,47 @@
 ﻿@page "/Productos/create"
+@using System.Text.Json
+@using System.Text
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 
 <h3>Crear Producto</h3>
 
-<ProductForm @ref="productForm" Product="product" OnSubmit="Create" ReturnAction="Return" />
+<ProductForm 
+    @ref="productForm" 
+    Product="product" 
+    OnSubmit="Create" 
+    ReturnAction="Return" 
+    OnFileSelected="HandleFileSelected" 
+/>
 
 @code {
     private Product product = new();
     private ProductForm productForm;
 
+    private IBrowserFile selectedFile;
+
     private async Task Create()
     {
-        var responseHttp = await repository.PostAsync("/api/products", product);
+
+         // Crear un MultipartFormDataContent para incluir la imagen y los datos del producto
+        MultipartFormDataContent formData = new MultipartFormDataContent();
+
+        // Convertir el producto a JSON y agregarlo al contenido del formulario
+        var productContent = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
+        formData.Add(productContent, "product");
+
+        // Agregar el archivo seleccionado al contenido del formulario
+        if (selectedFile != null)
+        {
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(selectedFile.Name);
+            var streamContent = new StreamContent(selectedFile.OpenReadStream());
+            formData.Add(streamContent, "file", fileName);
+        }
+
+        // Realizar la solicitud POST
+        var responseHttp = await repository.PostMultipartAsync<Product>("/api/products", formData);
+
         if (responseHttp.Error)
         {
             var message = await responseHttp.GetErrorMessageAsync();
@@ -23,7 +51,7 @@
         else
         {
             productForm.FormPostedSuccessfully = true;
-
+            
             var result = await sweetAlertService.FireAsync(new SweetAlertOptions
                 {
                     Title = "Mensaje",
@@ -39,5 +67,10 @@
     private void Return()
     {
         navigationManager.NavigateTo("/Productos");
+    }
+
+    private void HandleFileSelected(IBrowserFile file)
+    {
+        selectedFile = file;
     }
 }

@@ -110,7 +110,7 @@ namespace PruebaTecnica.API.Data
                     {
                         Code = $"P{i:D3}",
                         NameProduct = $"Producto {i} de {supplier.NameSupplier}",
-                        Photo = "https://hebmx.vtexassets.com/arquivos/ids/676552-1600-1600?v=638497922040100000&width=1600&height=1600&aspect=true",
+                        Photo = "1e6101a7-6343-4ce3-a6ad-2f8d73f9ab4c.png",
                         Price = random.Next(10000, 50000),
                         CreateDate = DateTime.UtcNow,
                         SupplierId = supplier.Id

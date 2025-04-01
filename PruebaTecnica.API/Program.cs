@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using PruebaTecnica.API.Helpers;
 using PruebaTecnica.API.Data;
-using PruebaTecnica.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using PruebaTecnica.Shared.Entities;
+using PruebaTecnica.API.Services;
+using PruebaTecnica.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DefaultConnection"));
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<IS3Service, S3Service>();
 //dependencia de autentificacion
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
@@ -34,6 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwtKey"]!)),
         ClockSkew = TimeSpan.Zero
     });
+
 builder.Services.AddSwaggerGen(c =>
 
 {
