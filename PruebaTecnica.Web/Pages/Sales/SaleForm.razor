@@ -91,7 +91,10 @@
         }
 
         Product currentProduct = Products.FirstOrDefault(p => p.Id == Sale.ProductId);
-        SelectedProductId = currentProduct.Id;
+        if (Sale.ProductId != null && currentProduct != null)
+        {
+            SelectedProductId = currentProduct.Id;            
+        }
 
 
     }

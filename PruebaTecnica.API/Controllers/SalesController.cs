@@ -99,7 +99,7 @@ namespace PruebaTecnica.API.Controllers
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
-                return null;
+                return Conflict(ex.Message);
             }
 
         }
