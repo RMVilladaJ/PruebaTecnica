@@ -15,7 +15,7 @@
 <h3>Ventas</h3>
 <div class="d-flex gap-2 mt-2 mb-4">
     <!-- Agrega margen inferior -->
-    <input type="text" @bind="SearchTerm" placeholder="Buscar..." class="form-control" />
+    <input type="text" @bind="SearchTerm" placeholder="Buscar..." class="form-control" @onkeyup="HandleKeyUp" />
     <button class="btn btn-primary" @onclick="ApplySearchFilter">Buscar</button>
 </div>
 
@@ -126,6 +126,14 @@
     private async Task ApplySearchFilter()
     {
         await Load();
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            await ApplySearchFilter();
+        }
     }
 
     private async Task DeleteAsync(Sale Sale)

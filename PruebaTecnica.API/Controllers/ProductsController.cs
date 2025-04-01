@@ -43,9 +43,9 @@ namespace PruebaTecnica.API.Controllers
          
             foreach (var product in products)
             {
-                if (!string.IsNullOrEmpty(product.Photo))
+                if (!string.IsNullOrEmpty(product.PhotoKey))
                 {
-                    product.Photo = await _s3Service.GetFileUrlAsync(product.Photo);
+                    product.PhotoUrl = await _s3Service.GetFileUrlAsync(product.PhotoKey);
                 }
             }
 
@@ -56,15 +56,15 @@ namespace PruebaTecnica.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> Get(int id)
         {
-            var owner = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            Product product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            product.PhotoUrl = await _s3Service.GetFileUrlAsync(product.PhotoKey);
 
-            if (owner == null)
+            if (product == null)
             {
-
                 return NotFound();
             }
 
-            return Ok(owner);
+            return Ok(product);
 
         }
 
@@ -102,7 +102,7 @@ namespace PruebaTecnica.API.Controllers
                         Console.WriteLine(ex.Message);
                     }
 
-                    productObject.Photo = fileKey;
+                    productObject.PhotoKey = fileKey;
                 }
             }
 
@@ -127,13 +127,14 @@ namespace PruebaTecnica.API.Controllers
         }
 
 
+
         [HttpPut]
         public async Task<ActionResult> Put(Product product)
         {
             string productCode = product.Code;
 
             Product a= await _context.Products
-                .Where(p =>  productCode == p.Code)
+                .Where(p =>  productCode == p.Code && p.Id != product.Id )
                 .FirstOrDefaultAsync();
 
             if (a != null) 

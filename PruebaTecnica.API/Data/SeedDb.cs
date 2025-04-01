@@ -102,21 +102,21 @@ namespace PruebaTecnica.API.Data
             {
                 List<Product> products = new()
                 {
-                    new Product { Code = "P01", NameProduct = "Ariel", Photo = "p01.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
-                    new Product { Code = "P02", NameProduct = "Ricostillas", Photo = "p02.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
-                    new Product { Code = "P03", NameProduct = "H2O", Photo = "p03.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
-                    new Product { Code = "P04", NameProduct = "Winny Pants", Photo = "p04.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
-                    new Product { Code = "P05", NameProduct = "Nutribella", Photo = "p05.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[4].Id },
-                    new Product { Code = "P06", NameProduct = "Deseo", Photo = "p06.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[5].Id },
-                    new Product { Code = "P07", NameProduct = "Nugets pietran", Photo = "p07.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
-                    new Product { Code = "P08", NameProduct = "Svelty", Photo = "p08.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
-                    new Product { Code = "P09", NameProduct = "Deditos Zenu", Photo = "p09.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
-                    new Product { Code = "P10", NameProduct = "Empanadas Carne", Photo = "p10.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
-                    new Product { Code = "P11", NameProduct = "Maiz en grano", Photo = "p11.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
-                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", Photo = "p12.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
-                    new Product { Code = "P12", NameProduct = "Nuggets pollo", Photo = "p13.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
-                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", Photo = "p14.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
-                    new Product { Code = "P12", NameProduct = "Nuggets pollo", Photo = "p15.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P01", NameProduct = "Ariel", PhotoKey = "p01.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
+                    new Product { Code = "P02", NameProduct = "Ricostillas", PhotoKey = "p02.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
+                    new Product { Code = "P03", NameProduct = "H2O", PhotoKey = "p03.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
+                    new Product { Code = "P04", NameProduct = "Winny Pants", PhotoKey = "p04.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P05", NameProduct = "Nutribella", PhotoKey = "p05.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[4].Id },
+                    new Product { Code = "P06", NameProduct = "Deseo", PhotoKey = "p06.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[5].Id },
+                    new Product { Code = "P07", NameProduct = "Nugets pietran", PhotoKey = "p07.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
+                    new Product { Code = "P08", NameProduct = "Svelty", PhotoKey = "p08.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
+                    new Product { Code = "P09", NameProduct = "Deditos Zenu", PhotoKey = "p09.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
+                    new Product { Code = "P10", NameProduct = "Empanadas Carne", PhotoKey = "p10.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
+                    new Product { Code = "P11", NameProduct = "Maiz en grano", PhotoKey = "p11.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
+                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", PhotoKey = "p12.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Nuggets pollo", PhotoKey = "p13.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", PhotoKey = "p14.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Nuggets pollo", PhotoKey = "p15.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
 
                 };
 

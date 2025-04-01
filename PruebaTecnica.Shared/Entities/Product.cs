@@ -26,7 +26,8 @@ namespace PruebaTecnica.Shared.Entities
         public string NameProduct { get; set; }
 
         [Display(Name = "product photo")]
-        public string Photo { get; set; }
+        public string PhotoUrl { get; set; }
+        public string PhotoKey { get; set; }
 
 
 

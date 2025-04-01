@@ -7,7 +7,7 @@
 
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>Editar Producto</h3>
+<h3>Editar Venta</h3>
 
 @if (sale is null)
 
@@ -70,7 +70,7 @@ else
 
     private async Task Edit()
     {
-        var responseHTTP = await repository.PutAsync("api/products", sale);
+        var responseHTTP = await repository.PutAsync("api/Sales", sale);
 
         if (responseHTTP.Error)
         {

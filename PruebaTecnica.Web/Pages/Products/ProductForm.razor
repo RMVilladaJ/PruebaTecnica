@@ -26,10 +26,10 @@
         <label>Foto:</label>
         <InputFile OnChange="HandleFileSelected" class="form-control" />
 
-        @if (!string.IsNullOrEmpty(Product.Photo))
+        @if (!string.IsNullOrEmpty(Product.PhotoUrl))
         {
             <div class="image-container">
-                <img src="@Product.Photo"
+                <img src="@Product.PhotoUrl"
                      height="200"
                      alt="Imagen del producto"
                      class="product-image" />

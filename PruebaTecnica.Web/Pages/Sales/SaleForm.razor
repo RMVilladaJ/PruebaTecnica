@@ -29,7 +29,7 @@
     </div>
 
     <div class="mb-3">
-        <label>Impuesto(%): { @Sale.tax }</label>
+        <label>Impuesto(%):</label>
         <InputNumber class="form-control" @bind-Value="LocalTax" />
         <ValidationMessage For="@(() => Sale.tax)" />
     </div>
@@ -89,6 +89,11 @@
         {
             Sale.SaleDate = DateTime.Now;
         }
+
+        Product currentProduct = Products.FirstOrDefault(p => p.Id == Sale.ProductId);
+        SelectedProductId = currentProduct.Id;
+
+
     }
 
     [EditorRequired]
