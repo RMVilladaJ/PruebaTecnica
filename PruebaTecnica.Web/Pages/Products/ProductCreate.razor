@@ -44,9 +44,19 @@
 
         if (responseHttp.Error)
         {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await sweetAlertService.FireAsync("Error", message);
+            if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                // Mostrar el mensaje de conflicto específico
+                await sweetAlertService.FireAsync("Error", responseHttp.ErrorMessage, SweetAlertIcon.Warning);
+            }
+            else
+            {
+                // Mostrar un mensaje de error genérico
+                var message = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            }
             return;
+
         }
         else
         {

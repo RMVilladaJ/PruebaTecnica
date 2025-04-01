@@ -106,16 +106,41 @@ namespace PruebaTecnica.API.Controllers
                 }
             }
 
+            string ProductCode = productObject.Code;
+
+            var productos = await _context.Products
+                .Where(p => ProductCode == p.Code)
+                .ToListAsync();
+
+            if (productos.Count >0) 
+            {
+                return Conflict("El codigo de producto no se puede repetir");
+            }
+
+
             _context.Update(productObject);
             await _context.SaveChangesAsync();
 
             return Ok(productObject);
+
+
         }
 
 
         [HttpPut]
         public async Task<ActionResult> Put(Product product)
         {
+            string productCode = product.Code;
+
+            Product a= await _context.Products
+                .Where(p =>  productCode == p.Code)
+                .FirstOrDefaultAsync();
+
+            if (a != null) 
+            {
+                return Conflict("El codigo de producto no se puede repetir");
+            }
+
             _context.Update(product);
             await _context.SaveChangesAsync();
             return Ok(product);

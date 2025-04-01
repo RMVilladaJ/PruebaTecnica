@@ -119,12 +119,16 @@ namespace PruebaTecnica.Web.Repositories
                     var response = await UnserializeAnswer<TResponse>(responseHttp, _jsonDefaultOptions);
                     return new HttpResponseWrapper<TResponse>(response, false, responseHttp);
                 }
-
-                return new HttpResponseWrapper<TResponse>(default, true, responseHttp);
+                else
+                {
+                    // Leer el contenido de la respuesta como una cadena
+                    var errorMessage = await responseHttp.Content.ReadAsStringAsync();
+                    return new HttpResponseWrapper<TResponse>(default, true, responseHttp, errorMessage); // Incluir el mensaje de error
+                }
             }
             catch (Exception ex)
             {
-                
+                Console.WriteLine(ex.Message.ToString());
                 return null;
             }
         }

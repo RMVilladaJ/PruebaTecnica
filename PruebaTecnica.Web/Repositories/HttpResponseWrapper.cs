@@ -11,11 +11,22 @@ namespace PruebaTecnica.Web.Repositories
             HttpResponseMessage = httpResponseMessage;
         }
 
+        public HttpResponseWrapper(T response, bool error, HttpResponseMessage httpResponseMessage, string errorMessage = null)
+        {
+            Response = response;
+            Error = error;
+            HttpResponseMessage = httpResponseMessage;
+            ErrorMessage = errorMessage;
+        }
+
+
         public bool Error { get; set; }
 
         public T? Response { get; set; }
 
         public HttpResponseMessage HttpResponseMessage { get; set; }
+
+        public string ErrorMessage { get; set; }
 
         public async Task<string?> GetErrorMessageAsync()
         {
