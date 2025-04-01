@@ -79,14 +79,14 @@ namespace PruebaTecnica.API.Data
             {
                 var suppliers = new List<Supplier>
                 {
-                    new Supplier { NameSupplier = "Proveedor A", NIT = "123456789", FixedPhone = "1234567", CellPhone = "3001234567", Email = "proveedora@example.com" },
-                    new Supplier { NameSupplier = "Proveedor B", NIT = "987654321", FixedPhone = "7654321", CellPhone = "3017654321", Email = "proveedorb@example.com" },
-                    new Supplier { NameSupplier = "Proveedor C", NIT = "567891234", FixedPhone = "1112233", CellPhone = "3025678912", Email = "proveedorc@example.com" },
-                    new Supplier { NameSupplier = "Proveedor D", NIT = "789123456", FixedPhone = "9998887", CellPhone = "3037891234", Email = "proveedord@example.com" },
-                    new Supplier { NameSupplier = "Proveedor E", NIT = "234567890", FixedPhone = "6667775", CellPhone = "3042345678", Email = "proveedore@example.com" },
-                    new Supplier { NameSupplier = "Proveedor F", NIT = "876543210", FixedPhone = "5554443", CellPhone = "3058765432", Email = "proveedorf@example.com" },
-                    new Supplier { NameSupplier = "Proveedor G", NIT = "345678901", FixedPhone = "3332221", CellPhone = "3063456789", Email = "proveedorg@example.com" },
-                    new Supplier { NameSupplier = "Proveedor H", NIT = "456789012", FixedPhone = "2221119", CellPhone = "3074567890", Email = "proveedorh@example.com" }
+                    new Supplier { NameSupplier = "Exito", NIT = "123456789", FixedPhone = "1234567", CellPhone = "3001234567", Email = "Exito@example.com" },
+                    new Supplier { NameSupplier = "ARA", NIT = "987654321", FixedPhone = "7654321", CellPhone = "3017654321", Email = "ARA@example.com" },
+                    new Supplier { NameSupplier = "Olimpica", NIT = "567891234", FixedPhone = "1112233", CellPhone = "3025678912", Email = "Olimpica@example.com" },
+                    new Supplier { NameSupplier = "Jumbo", NIT = "789123456", FixedPhone = "9998887", CellPhone = "3037891234", Email = "D1@example.com" },
+                    new Supplier { NameSupplier = "D1", NIT = "234567890", FixedPhone = "6667775", CellPhone = "3042345678", Email = "La Vaquita@example.com" },
+                    new Supplier { NameSupplier = "La Vaquita", NIT = "876543210", FixedPhone = "5554443", CellPhone = "3058765432", Email = "proveedorf@example.com" },
+                    new Supplier { NameSupplier = "Corabastos", NIT = "345678901", FixedPhone = "3332221", CellPhone = "3063456789", Email = "Corabastos@example.com" },
+                    new Supplier { NameSupplier = "Surtimax", NIT = "456789012", FixedPhone = "2221119", CellPhone = "3074567890", Email = "Surtimax@example.com" }
                 };
 
                 _context.Suppliers.AddRange(suppliers);
@@ -100,25 +100,33 @@ namespace PruebaTecnica.API.Data
         {
             if (!_context.Products.Any())
             {
-                var products = new List<Product>();
-                Random random = new Random();
-
-                for (int i = 1; i <= 20; i++)
+                List<Product> products = new()
                 {
-                    var supplier = suppliers[random.Next(suppliers.Count)];
-                    products.Add(new Product
-                    {
-                        Code = $"P{i:D3}",
-                        NameProduct = $"Producto {i} de {supplier.NameSupplier}",
-                        Photo = "1e6101a7-6343-4ce3-a6ad-2f8d73f9ab4c.png",
-                        Price = random.Next(10000, 50000),
-                        CreateDate = DateTime.UtcNow,
-                        SupplierId = supplier.Id
-                    });
-                }
+                    new Product { Code = "P01", NameProduct = "Ariel", Photo = "p01.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
+                    new Product { Code = "P02", NameProduct = "Ricostillas", Photo = "p02.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
+                    new Product { Code = "P03", NameProduct = "H2O", Photo = "p03.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
+                    new Product { Code = "P04", NameProduct = "Winny Pants", Photo = "p04.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P05", NameProduct = "Nutribella", Photo = "p05.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[4].Id },
+                    new Product { Code = "P06", NameProduct = "Deseo", Photo = "p06.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[5].Id },
+                    new Product { Code = "P07", NameProduct = "Nugets pietran", Photo = "p07.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
+                    new Product { Code = "P08", NameProduct = "Svelty", Photo = "p08.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[6].Id },
+                    new Product { Code = "P09", NameProduct = "Deditos Zenu", Photo = "p09.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[0].Id },
+                    new Product { Code = "P10", NameProduct = "Empanadas Carne", Photo = "p10.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[1].Id },
+                    new Product { Code = "P11", NameProduct = "Maiz en grano", Photo = "p11.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[2].Id },
+                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", Photo = "p12.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Nuggets pollo", Photo = "p13.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Chorizo de cerdo", Photo = "p14.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+                    new Product { Code = "P12", NameProduct = "Nuggets pollo", Photo = "p15.jpg", Price = 9000, CreateDate = new DateTime(), SupplierId = suppliers[3].Id },
+
+                };
+
+                Console.WriteLine(products.Count);
+
+
 
                 _context.Products.AddRange(products);
                 await _context.SaveChangesAsync();
+
             }
 
             return await _context.Products.ToListAsync();
